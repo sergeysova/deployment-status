@@ -24,6 +24,17 @@ async function run() {
 
     const client = new github.GitHub(token);
 
+    if (['in_progress', 'queued'].includes(state)) {
+      const headers = {
+        Accept: 'application/vnd.github.flash-preview+json'
+      }
+
+      client.repos.createDeploymentStatus.endpoint.DEFAULTS.headers = {
+        ...client.repos.createDeploymentStatus.endpoint.DEFAULTS.headers,
+        ...headers
+      }
+    }
+
     await client.repos.createDeploymentStatus({
       ...context.repo,
       deployment_id: parseInt(deploymentId),
